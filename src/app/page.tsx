@@ -1,5 +1,4 @@
-import Header from "@/components/Header";
-import Navmenu from "@/components/navmenu";
+
 import InputExpense from "./input-expense/page";
 
 export default function Home() {
