@@ -1,35 +1,15 @@
-// lib/mongoose.js
+import mongoose from "mongoose";
 
-import mongoose from 'mongoose';
+const MONGO_URI = process.env.MONGO_URI as string;
 
-const MONGO_URI = process.env.MONGO_URI;
-
-const cached = {
-  connection: null,
-  promise: null,
-};
-
-async function connectMongo() {
-  if (cached.connection) {
-    return cached.connection;
+export default async function connectMongo() {
+  if (!MONGO_URI) {
+    throw new Error("Please define the MONGODB_URI environment variable");
   }
 
-  if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
-
-    cached.promise = mongoose.connect(MONGO_URI as string, opts);
+  if (mongoose.connection.readyState >= 1) {
+    return;
   }
 
-  try {
-    cached.connection = await cached.promise;
-  } catch (e) {
-    cached.promise = null;
-    throw e;
-  }
-
-  return cached.connection;
+  return mongoose.connect(MONGO_URI);
 }
-
-export default connectMongo;
