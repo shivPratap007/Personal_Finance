@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 import {
   Form,
   FormField,
@@ -35,7 +37,14 @@ const formSchema = z.object({
   amount: z.coerce.number().positive("Amount must be positive"),
   date: z.date(),
   description: z.string().min(3, "Description must be at least 3 characters"),
-  category: z.enum(["food", "transport", "housing", "other"]),
+  category: z.enum([
+    "Food",
+    "Rent",
+    "Entertainment",
+    "Transport",
+    "Housing",
+    "Other",
+  ]),
 });
 
 export default function InputExpense() {
@@ -44,13 +53,23 @@ export default function InputExpense() {
     defaultValues: {
       amount: 0,
       description: "",
-      category: "food",
+      category: "Food",
     },
   });
 
-  function onSubmit(values) {
-    console.log(values);
-    // You can add your form submission logic here
+  async function onSubmit(values) {
+    try {
+      console.log(values);
+      // You can add your form submission logic here
+      const response = await axios.post("/api/transactions", values);
+      if (response.status === 201) {
+        form.reset();
+        toast.success("Expense added successfully");
+      }
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
@@ -157,10 +176,12 @@ export default function InputExpense() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="food">Food</SelectItem>
-                    <SelectItem value="transport">Transport</SelectItem>
-                    <SelectItem value="housing">Housing</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
+                    <SelectItem value="Food">Food</SelectItem>
+                    <SelectItem value="Rent">Rent</SelectItem>
+                    <SelectItem value="Entertainment">Entertainment</SelectItem>
+                    <SelectItem value="Transport">Transport</SelectItem>
+                    <SelectItem value="Housing">Housing</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormDescription className="text-xs">
