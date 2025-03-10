@@ -4,13 +4,21 @@ export interface ITransaction extends Document {
   amount: number;
   date: Date;
   description: string;
-  category: "Food" | "Rent" | "Entertainment" | "Others";
+  category:
+    | "Food"
+    | "Rent"
+    | "Entertainment"
+    | "Transport"
+    | "Housing"
+    | "Others";
 }
 
 export enum TransactionCategory {
   Food = "Food",
   Rent = "Rent",
   Entertainment = "Entertainment",
+  Transport = "Transport",
+  Housing = "Housing",
   Others = "Others",
 }
 
