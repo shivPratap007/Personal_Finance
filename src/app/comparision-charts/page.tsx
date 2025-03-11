@@ -82,6 +82,7 @@ async function fetchData(selectedMonth: number): Promise<DataState> {
 }
 
 const api = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
+console.log(api);
 const genAI = new GoogleGenerativeAI(api);
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
@@ -115,7 +116,6 @@ async function analyzeFinancialData(
                       Please provide the data insights in the form of an array of  strings. Just provide me the array nothing more.`;
     const response = await model.generateContent(prompt);
     const responseText = response.response.text();
-    
 
     return extractArrayFromResponse(responseText);
   } catch (error) {
