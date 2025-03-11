@@ -2,8 +2,16 @@ import mongoose, { Document, Schema, Model } from "mongoose";
 import { TransactionCategory } from "./transactions";
 
 export interface IBudget extends Document {
-  category: "Food" | "Rent" | "Entertainment" | "Others";
+  category:
+    | "Food"
+    | "Rent"
+    | "Entertainment"
+    | "Transport"
+    | "Housing"
+    | "Others";
   limit: number;
+  month: number;
+  year: number;
 }
 
 const BudgetSchema = new Schema<IBudget>(
@@ -18,13 +26,24 @@ const BudgetSchema = new Schema<IBudget>(
       required: true,
       min: 0,
     },
+    month: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 12,
+    },
+    year: {
+      type: Number,
+      required: true,
+    }
   },
   {
     timestamps: true,
   }
 );
 
-BudgetSchema.index({ category: 1 }, { unique: true });
+// Create a compound index on category, month, and year to make them a composite key
+BudgetSchema.index({ category: 1, month: 1, year: 1 }, { unique: true });
 
 const BudgetModel: Model<IBudget> =
   (mongoose.models.Budget as Model<IBudget>) ||
