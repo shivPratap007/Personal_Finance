@@ -21,7 +21,7 @@ export type Ttransaction = {
   category: string;
 };
 
-const categoryIcons: Record<string, string> = {
+export const categoryIcons: Record<string, string> = {
   food: "🍕",
   rent: "🏠",
   entertainment: "🎬",
@@ -29,10 +29,6 @@ const categoryIcons: Record<string, string> = {
   housing: "🏡",
   others: "📦",
 };
-
-
-
-
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState<Ttransaction[]>([]);
@@ -128,7 +124,7 @@ export default function Transactions() {
               >
                 <div className="flex items-center space-x-4">
                   <span className="text-3xl">
-                    {categoryIcons[transaction.category] || "💰"}
+                    {categoryIcons[transaction.category.toLowerCase()] || "💰"}
                   </span>
                   <div>
                     <p className="text-lg font-semibold text-gray-700">
