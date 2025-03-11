@@ -2,7 +2,7 @@ import { link } from "fs";
 import Link from "next/link";
 import React from "react";
 
-const navMenu = [
+export const navMenu = [
   {
     title: "Input Expense",
     link: "/input-expense",
@@ -31,7 +31,7 @@ const navMenu = [
 
 export default function Navmenu() {
   return (
-    <div className="mt-4 flex justify-center flex-wrap">
+    <div className="mt-4 justify-center flex-wrap hidden  sm:flex ">
       {navMenu.map((item, index) => {
         return (
           <Link href={item?.link} key={index}>

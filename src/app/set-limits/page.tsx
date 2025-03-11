@@ -35,6 +35,7 @@ export default function SetLimits() {
       setLoadingData(true);
       try {
         const response = await fetch(`/api/budgets/${month}/${year}`);
+        console.log(month,year);
         const data = await response.json();
 
         // Filter budgets for the selected month and year
