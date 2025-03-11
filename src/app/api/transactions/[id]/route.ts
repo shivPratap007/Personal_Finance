@@ -10,9 +10,14 @@ export async function GET(
     await connectMongo();
 
     const { params } = context;
-    console.log(params);
+    if (parseInt(params.id) === 0) {
+      const transactions = await Transaction.find({}).sort({ date: -1 });
+      return NextResponse.json({
+        transactions: transactions.length > 0 ? transactions : [],
+      });
+    }
 
-    const month = parseInt(params.id); 
+    const month = parseInt(params.id);
     const year = new Date().getFullYear(); // Always use the current year
 
     if (isNaN(month) || month < 1 || month > 12) {
@@ -26,7 +31,6 @@ export async function GET(
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0, 23, 59, 59, 999);
 
-
     // Fetch transactions within the given month
     const transactions = await Transaction.find({
       date: { $gte: startDate, $lte: endDate },
@@ -36,7 +40,6 @@ export async function GET(
       transactions: transactions.length > 0 ? transactions : [],
     });
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       { error: "Failed to fetch transactions" },
       { status: 500 }
