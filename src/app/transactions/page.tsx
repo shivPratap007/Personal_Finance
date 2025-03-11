@@ -11,6 +11,7 @@ import {
 import { X } from "lucide-react";
 import EditForm from "@/components/EditForm";
 import MonthlyBarChart from "@/components/MonthlyBarChart";
+import { fetchTransactions, months } from "@/constants/data";
 
 export type Ttransaction = {
   _id: number;
@@ -29,70 +30,9 @@ const categoryIcons: Record<string, string> = {
   others: "📦",
 };
 
-const fetchTransactions = async (
-  selectedMonth: number
-): Promise<Ttransaction[]> => {
-  try {
-    const res = await fetch(`/api/transactions/${selectedMonth}`);
-    if (!res.ok) throw new Error("Failed to fetch transactions");
-    const data = await res.json();
-    return data.transactions;
-  } catch (error) {
-    console.error("Error fetching transactions:", error);
-    return [];
-  }
-};
 
-const months = [
-  {
-    name: "January",
-    value: 1,
-  },
-  {
-    name: "February",
-    value: 2,
-  },
-  {
-    name: "March",
-    value: 3,
-  },
-  {
-    name: "April",
-    value: 4,
-  },
-  {
-    name: "May",
-    value: 5,
-  },
-  {
-    name: "June",
-    value: 6,
-  },
-  {
-    name: "July",
-    value: 7,
-  },
-  {
-    name: "August",
-    value: 8,
-  },
-  {
-    name: "September",
-    value: 9,
-  },
-  {
-    name: "October",
-    value: 10,
-  },
-  {
-    name: "November",
-    value: 11,
-  },
-  {
-    name: "December",
-    value: 12,
-  },
-];
+
+
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState<Ttransaction[]>([]);
@@ -160,13 +100,13 @@ export default function Transactions() {
       </div>
       <div className="flex justify-center gap-2 my-4 z-10">
         <button
-          className="shadow-md  py-2 px-4 rounded cursor-pointer"
+          className="shadow-md font-semibold  py-2 px-4 rounded cursor-pointer"
           onClick={() => setVisible(false)}
         >
           Transactions
         </button>
         <button
-          className="shadow-md  py-2 px-4 rounded cursor-pointer"
+          className="shadow-md font-semibold  py-2 px-4 rounded cursor-pointer"
           onClick={() => setVisible(true)}
         >
           Bar Chart
