@@ -11,6 +11,7 @@ import {
 import { X } from "lucide-react";
 import EditForm from "@/components/EditForm";
 
+
 export type Ttransaction = {
   _id: number;
   amount: number;
@@ -28,9 +29,11 @@ const categoryIcons: Record<string, string> = {
   Other: "💸",
 };
 
-const fetchTransactions = async (): Promise<Ttransaction[]> => {
+const fetchTransactions = async (
+  selectedMonth: number
+): Promise<Ttransaction[]> => {
   try {
-    const res = await fetch(`/api/transactions`);
+    const res = await fetch(`/api/transactions/${selectedMonth}`);
     if (!res.ok) throw new Error("Failed to fetch transactions");
     const data = await res.json();
     return data.transactions;
@@ -40,23 +43,75 @@ const fetchTransactions = async (): Promise<Ttransaction[]> => {
   }
 };
 
+const months = [
+  {
+    name: "January",
+    value: 1,
+  },
+  {
+    name: "February",
+    value: 2,
+  },
+  {
+    name: "March",
+    value: 3,
+  },
+  {
+    name: "April",
+    value: 4,
+  },
+  {
+    name: "May",
+    value: 5,
+  },
+  {
+    name: "June",
+    value: 6,
+  },
+  {
+    name: "July",
+    value: 7,
+  },
+  {
+    name: "August",
+    value: 8,
+  },
+  {
+    name: "September",
+    value: 9,
+  },
+  {
+    name: "October",
+    value: 10,
+  },
+  {
+    name: "November",
+    value: 11,
+  },
+  {
+    name: "December",
+    value: 12,
+  },
+];
+
 export default function Transactions() {
   const [transactions, setTransactions] = useState<Ttransaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshCounter, setRefreshCounter] = useState(0);
   const [editDetails, setEditDetails] = useState<Ttransaction | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState<number>(0);
 
-  const getTransactions = useCallback(async () => {
+  const getTransactions = useCallback(async (selectedMonth: number) => {
     setLoading(true);
-    const data = await fetchTransactions();
+    const data = await fetchTransactions(selectedMonth);
     setTransactions(data);
     setLoading(false);
   }, []);
 
   useEffect(() => {
-    getTransactions();
-  }, [getTransactions, refreshCounter]);
+    getTransactions(selectedMonth);
+  }, [getTransactions, refreshCounter, selectedMonth]);
 
   const handleDelete = async (id: number) => {
     try {
@@ -89,6 +144,14 @@ export default function Transactions() {
 
   return (
     <>
+      <div className="flex justify-end my-4 z-10">
+        <select className="border border-gray-300 rounded-md p-2" onChange={(e) => setSelectedMonth(Number(e.target.value))}>
+          <option value="0">All</option>
+          {months.map((month) => (
+            <option value={month.value}>{month.name}</option>
+          ))}
+        </select>
+      </div>
       <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-6">
         {loading ? (
           <p className="col-span-full text-center text-gray-500 py-8">
@@ -148,7 +211,7 @@ export default function Transactions() {
         )}
       </div>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen} >
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-md md:max-w-lg lg:max-w-xl">
           <div className="flex justify-between items-center">
             <DialogTitle>Edit Transaction</DialogTitle>
