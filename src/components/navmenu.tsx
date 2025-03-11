@@ -16,8 +16,8 @@ const navMenu = [
     link: "/categeory-charts",
   },
   {
-    title: "Monthly Expenses",
-    link: "/monthly-charts",
+    title: "Summary",
+    link: "/summary",
   },
   {
     title: "Set Limits",
