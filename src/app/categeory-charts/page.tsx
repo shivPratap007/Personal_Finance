@@ -2,6 +2,13 @@
 
 import { Ttransaction } from "@/app/transactions/page";
 import { fetchTransactions, months } from "@/constants/data";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { useCallback, useEffect, useState } from "react";
 import {
   PieChart,
@@ -106,17 +113,22 @@ export default function CategoryChart() {
   return (
     <>
       <div className="flex justify-end my-4 z-10">
-        <select
-          className="border border-gray-300 rounded-md p-2"
-          onChange={(e) => setSelectedMonth(Number(e.target.value))}
+        <Select
+          value={selectedMonth.toString()}
+          onValueChange={(value) => setSelectedMonth(Number(value))}
         >
-          <option value="0">All</option>
-          {months.map((month) => (
-            <option key={month.name} value={month.value}>
-              {month.name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger >
+            <SelectValue placeholder="Select month" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="0">All</SelectItem>
+            {months.map((month) => (
+              <SelectItem key={month.name} value={month.value.toString()}>
+                {month.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="w-full flex justify-center">
         {loading ? (

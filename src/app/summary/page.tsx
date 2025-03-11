@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { months } from "@/constants/data";
 import { categoryIcons } from "../transactions/page";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
 interface ExpenseData {
   totalExpenses: number;
@@ -78,17 +79,22 @@ export default function ExpenseDashboard() {
   return (
     <>
       <div className="flex justify-end my-4 z-10">
-        <select
-          className="border border-gray-300 rounded-md p-2"
-          onChange={(e) => setSelectedMonth(Number(e.target.value))}
+      <Select
+          value={selectedMonth.toString()}
+          onValueChange={(value) => setSelectedMonth(Number(value))}
         >
-          <option value="0">All</option>
-          {months.map((month) => (
-            <option key={month.name} value={month.value}>
-              {month.name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger >
+            <SelectValue placeholder="Select month" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="0">All</SelectItem>
+            {months.map((month) => (
+              <SelectItem key={month.name} value={month.value.toString()}>
+                {month.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="p-4 flex flex-col gap-4">
         {/* Total Expenses Card */}

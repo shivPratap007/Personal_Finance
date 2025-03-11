@@ -12,6 +12,13 @@ import { X } from "lucide-react";
 import EditForm from "@/components/EditForm";
 import MonthlyBarChart from "@/components/MonthlyBarChart";
 import { fetchTransactions, months } from "@/constants/data";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export type Ttransaction = {
   _id: number;
@@ -82,17 +89,22 @@ export default function Transactions() {
   return (
     <>
       <div className="flex justify-end my-4 z-10">
-        <select
-          className="border border-gray-300 rounded-md p-2"
-          onChange={(e) => setSelectedMonth(Number(e.target.value))}
+        <Select
+          value={selectedMonth.toString()}
+          onValueChange={(value) => setSelectedMonth(Number(value))}
         >
-          <option value="0">All</option>
-          {months.map((month) => (
-            <option key={month.name} value={month.value}>
-              {month.name}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger>
+            <SelectValue placeholder="Select month" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="0">All</SelectItem>
+            {months.map((month) => (
+              <SelectItem key={month.name} value={month.value.toString()}>
+                {month.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="flex justify-center gap-2 my-4 z-10">
         <button
