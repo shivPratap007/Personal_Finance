@@ -5,10 +5,12 @@ import { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
 
 const categoryIcons: Record<string, string> = {
@@ -21,21 +23,36 @@ const categoryIcons: Record<string, string> = {
 };
 
 // Define all categories (ensures missing categories show up with zero values)
-const allCategories = ["food", "rent", "entertainment", "transport", "housing", "others"];
+const allCategories = [
+  "food",
+  "rent",
+  "entertainment",
+  "transport",
+  "housing",
+  "others",
+];
 
-export default function ExpenseBarChart({ transactions }: { transactions: Ttransaction[] }) {
-  const [chartData, setChartData] = useState<{ category: string; amount: number }[]>([]);
+// Assign different colors to each category
+const categoryColors: Record<string, string> = {
+  food: "#FF6384",
+  rent: "#36A2EB",
+  entertainment: "#FFCE56",
+  transport: "#4CAF50",
+  housing: "#9966FF",
+  others: "#FF9F40",
+};
+
+export default function ExpenseBarChart({
+  transactions,
+}: {
+  transactions: Ttransaction[];
+}) {
+  const [chartData, setChartData] = useState<
+    { name: string; value: number; category: string }[]
+  >([]);
 
   useEffect(() => {
-    if (!transactions || transactions.length === 0) {
-      setChartData(
-        allCategories.map((category) => ({
-          category: `${categoryIcons[category] || "💰"} ${category}`,
-          amount: 0,
-        }))
-      );
-      return;
-    }
+    console.log("Processing transactions for bar chart:", transactions);
 
     // Initialize all categories with zero amounts
     const categoryTotals: Record<string, number> = {};
@@ -44,32 +61,49 @@ export default function ExpenseBarChart({ transactions }: { transactions: Ttrans
     });
 
     // Aggregate expenses by category
-    transactions.forEach((t) => {
-      const category = allCategories.includes(t.category.toLowerCase()) ? t.category.toLowerCase() : "others";
-      categoryTotals[category] = (categoryTotals[category] || 0) + t.amount;
-    });
+    if (transactions && transactions.length > 0) {
+      transactions.forEach((t) => {
+        const category = allCategories.includes(t.category.toLowerCase())
+          ? t.category.toLowerCase()
+          : "others";
+        categoryTotals[category] += t.amount;
+      });
+    }
 
     // Format data for the chart
     const formattedData = allCategories.map((category) => ({
-      category: `${categoryIcons[category] || "💰"} ${category}`,
-      amount: parseFloat(categoryTotals[category].toFixed(2)), // Limit to 2 decimal places
+      name: `${categoryIcons[category]} ${category}`,
+      value: parseFloat(categoryTotals[category].toFixed(2)), // Limit to 2 decimal places
+      category: category, // Store category name for color mapping
     }));
 
     setChartData(formattedData);
+
+    console.log("Formatted bar chart data:", formattedData);
   }, [transactions]);
 
   return (
     <div>
       {!transactions || transactions.length === 0 ? (
-        <div className="p-4 text-center text-gray-500">No transactions found for this period</div>
+        <div className="p-4 text-center text-gray-500">
+          No transactions found for this period
+        </div>
       ) : (
         <div className="w-full flex justify-center">
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={chartData}>
-              <XAxis dataKey="category" tick={{ fontSize: 14 }} />
+              <XAxis dataKey="name" tick={{ fontSize: 14 }} />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="amount" fill="#4F46E5" barSize={50} />
+              <Legend />
+              <Bar dataKey="value" name="Amount">
+                {chartData.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={categoryColors[entry.category]}
+                  />
+                ))}
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
