@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import {
   Form,
   FormField,
@@ -59,6 +59,7 @@ export default function InputExpense() {
     },
   });
 
+  // @ts-ignore
   async function onSubmit(values) {
     try {
       // You can add your form submission logic here

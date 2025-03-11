@@ -55,12 +55,49 @@ export const fetchTransactions = async (
   selectedMonth: number
 ): Promise<Ttransaction[]> => {
   try {
-    const res = await fetch(`/api/transactions/${selectedMonth}`);
+    const res = await fetch(`/api/transactions?id=${selectedMonth}`);
     if (!res.ok) throw new Error("Failed to fetch transactions");
     const data = await res.json();
     return data.transactions;
   } catch (error) {
     console.error("Error fetching transactions:", error);
     return [];
+  }
+};
+
+export const categoryIcons: Record<string, string> = {
+  food: "🍕",
+  rent: "🏠",
+  entertainment: "🎬",
+  transport: "🚌",
+  housing: "🏡",
+  others: "📦",
+};
+
+
+
+export interface ExpenseData {
+  totalExpenses: number;
+  categoryBreakdown: any[];
+  recentTransactions: any[];
+  monthlyExpenses: any[];
+}
+
+export const fetchSummary = async (
+  selectedMonth: number
+): Promise<ExpenseData> => {
+  try {
+    const res = await fetch(`/api/summary?month=${selectedMonth}`);
+    if (!res.ok) throw new Error("Failed to fetch transactions");
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    return {
+      totalExpenses: -1,
+      categoryBreakdown: [],
+      recentTransactions: [],
+      monthlyExpenses: [],
+    };
   }
 };

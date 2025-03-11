@@ -11,7 +11,7 @@ import {
 import { X } from "lucide-react";
 import EditForm from "@/components/EditForm";
 import MonthlyBarChart from "@/components/MonthlyBarChart";
-import { fetchTransactions, months } from "@/constants/data";
+import { categoryIcons, fetchTransactions, months } from "@/constants/data";
 import {
   Select,
   SelectContent,
@@ -28,14 +28,7 @@ export type Ttransaction = {
   category: string;
 };
 
-export const categoryIcons: Record<string, string> = {
-  food: "🍕",
-  rent: "🏠",
-  entertainment: "🎬",
-  transport: "🚌",
-  housing: "🏡",
-  others: "📦",
-};
+
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState<Ttransaction[]>([]);
@@ -59,8 +52,9 @@ export default function Transactions() {
 
   const handleDelete = async (id: number) => {
     try {
-      const response = await fetch(`/api/transactions/${id}`, {
+      const response = await fetch(`/api/transactions?id=${id}`, {
         method: "DELETE",
+        
       });
 
       const data = await response.json();

@@ -12,7 +12,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Metadata } from "next";
 
 const categories = [
   "Food",
@@ -22,8 +21,6 @@ const categories = [
   "Housing",
   "Others",
 ];
-
-
 
 export default function SetLimits() {
   const [limits, setLimits] = useState<{ [key: string]: number }>({});
@@ -37,16 +34,20 @@ export default function SetLimits() {
     const fetchLimits = async () => {
       setLoadingData(true);
       try {
-        const response = await fetch(`/api/budgets/${month}/${year}`);
+        const response = await fetch(
+          `/api/budgets?month=${month}&year=${year}`
+        );
         const data = await response.json();
 
         // Filter budgets for the selected month and year
         const currentBudgets = data.budgets.filter(
+          //@ts-ignore
           (budget: any) => budget.month === month && budget.year === year
         );
 
         // Convert to the format needed for the component
         const limitValues: { [key: string]: number } = {};
+        //@ts-ignore
         currentBudgets.forEach((budget: any) => {
           limitValues[budget.category] = budget.limit;
         });
@@ -54,6 +55,7 @@ export default function SetLimits() {
         setLimits(limitValues);
       } catch (error) {
         toast.error("Failed to fetch existing limits");
+        console.error(error);
       } finally {
         setLoadingData(false);
       }
@@ -78,12 +80,14 @@ export default function SetLimits() {
       }));
 
       // Make the POST request with the new format
-      await fetch("/api/budget", {
+      const response = await fetch("/api/budgets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ budgets: budgetArray }),
       });
-
+      if (!response.ok) {
+        throw new Error("Failed to update limits");
+      }
       toast.success("Limits updated successfully!");
     } catch (error) {
       toast.error("Failed to update limits");

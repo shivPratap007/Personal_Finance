@@ -29,8 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { months } from "@/constants/data";
-import { fetchSummary } from "../summary/page";
+import { fetchSummary, months } from "@/constants/data";
 
 // Type Definitions
 interface CategoryBreakdownItem {
@@ -71,7 +70,7 @@ const categoryIcons: Record<string, string> = {
 async function fetchData(selectedMonth: number): Promise<DataState> {
   const spentData = await fetchSummary(selectedMonth);
   const year = 2025;
-  const response = await fetch(`/api/budgets/${selectedMonth}/${year}`);
+  const response = await fetch(`/api/budgets?month=${selectedMonth}&year=${year}`);
   const d = await response.json();
 
   return {
@@ -171,7 +170,7 @@ const BudgetSpendingDashboard: React.FC = () => {
               <Alert variant="destructive" className="mb-6">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  You're over budget in {overBudgetCategories.length}{" "}
+                  You&apos;re over budget in {overBudgetCategories.length}{" "}
                   {overBudgetCategories.length === 1
                     ? "category"
                     : "categories"}
@@ -311,5 +310,3 @@ const BudgetSpendingDashboard: React.FC = () => {
 };
 
 export default BudgetSpendingDashboard;
-
-

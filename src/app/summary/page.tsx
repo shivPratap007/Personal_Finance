@@ -4,9 +4,15 @@ import { useCallback, useEffect, useState } from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { months } from "@/constants/data";
-import { categoryIcons } from "../transactions/page";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { fetchSummary, months } from "@/constants/data";
+import { categoryIcons } from "@/constants/data";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 interface ExpenseData {
   totalExpenses: number;
@@ -39,19 +45,8 @@ interface MonthlyExpense {
   total: number;
 }
 
-export const fetchSummary = async (
-  selectedMonth: number
-): Promise<ExpenseData> => {
-  try {
-    const res = await fetch(`/api/summary/${selectedMonth}`);
-    if (!res.ok) throw new Error("Failed to fetch transactions");
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching transactions:", error);
-    return;
-  }
-};
+// @ts-ignore
+
 
 export default function ExpenseDashboard() {
   const [loading, setLoading] = useState(false);
@@ -72,18 +67,18 @@ export default function ExpenseDashboard() {
 
   useEffect(() => {
     getTransactions(selectedMonth);
-  }, [selectedMonth]);
+  }, [getTransactions, selectedMonth]);
 
   console.log(data);
 
   return (
     <>
       <div className="flex justify-end my-4 z-10">
-      <Select
+        <Select
           value={selectedMonth.toString()}
           onValueChange={(value) => setSelectedMonth(Number(value))}
         >
-          <SelectTrigger >
+          <SelectTrigger>
             <SelectValue placeholder="Select month" />
           </SelectTrigger>
           <SelectContent>

@@ -59,6 +59,7 @@ export default function EditForm({
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }) {
   const form = useForm({
+    // @ts-ignore
     resolver: zodResolver(formSchema),
     defaultValues: {
       amount: editDetails?.amount || 0,
@@ -68,10 +69,11 @@ export default function EditForm({
     },
   });
 
+  //@ts-ignore
   async function onSubmit(values: any) {
     try {
       const response = await axios.put(
-        `/api/transactions/${editDetails._id}`,
+        `/api/transactions?id=${editDetails._id}`,
         values
       );
       if (response.status === 200) {

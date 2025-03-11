@@ -1,18 +1,14 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import connectMongo from "@/lib/connectDB";
 import Transaction from "@/models/transactions";
 
-export async function GET(
-  request: Request,
-  context: { params: { month?: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
     await connectMongo();
 
-    // Extract month from params or URL query params
-    const url = new URL(request.url);
-    const monthParam =
-      context.params?.month || url.searchParams.get("month") || "0";
+    // Extract month from URL query params using NextRequest
+    const searchParams = request.nextUrl.searchParams;
+    const monthParam = searchParams.get("month") || "0";
     const month = parseInt(monthParam);
 
     console.log("Month parameter:", month);

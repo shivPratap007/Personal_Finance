@@ -6,6 +6,7 @@ export async function GET() {
     await connectMongo();
     return NextResponse.json({ health: "ok" });
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { error: "Failed to fetch summary" },
       { status: 500 }

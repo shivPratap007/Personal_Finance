@@ -1,30 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectMongo from "@/lib/connectDB";
 import Budget from "@/models/budget";
-import { months } from "@/constants/data";
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { month?: string; year?: string } }
-) {
+export async function GET(req: Request) {
   try {
     await connectMongo();
+    const url = new URL(req.url);
+    const month = url.searchParams.get("month");
+    const year = url.searchParams.get("year");
 
-    const { month, year } = params;
-
-    // Extract month and year from URL search params
-    console.log(month, year);
-    let budgets: any;
+    let budgets: any = [];
 
     if (month && year) {
-      // If month and year are provided, filter by them
       budgets = await Budget.find({
         month: parseInt(month),
         year: parseInt(year),
       });
-    } else {
-      // If not, return all budgets
-      budgets = [];
     }
 
     return NextResponse.json({ budgets });
@@ -45,6 +36,7 @@ export async function POST(req: NextRequest) {
     // Check if the request contains an array of budgets to set multiple at once
     if (Array.isArray(data.budgets)) {
       // Process multiple budget entries
+      //@ts-ignore
       const operations = data.budgets.map((budgetItem: any) => ({
         updateOne: {
           filter: {
