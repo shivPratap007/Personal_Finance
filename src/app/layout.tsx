@@ -17,7 +17,6 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Personal Finance",
-  
 };
 
 export default function RootLayout({
@@ -27,15 +26,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <title>Personal Finance</title>
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Toaster position="top-center" />
         <Header />
         <Navmenu />
-        <div className="px-4 md:px-20">
-        {children}
-        </div>
+        <div className="px-4 md:px-20">{children}</div>
       </body>
     </html>
   );

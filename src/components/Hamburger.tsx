@@ -34,7 +34,10 @@ export default function Hamburger() {
   return (
     <>
       {/* Hamburger Icon */}
-      <button onClick={toggleMenu} className="text-2xl sm:hidden cursor-pointer">
+      <button
+        onClick={toggleMenu}
+        className="text-2xl sm:hidden cursor-pointer"
+      >
         <RxHamburgerMenu />
       </button>
 
@@ -55,6 +58,7 @@ export default function Hamburger() {
         <div className="flex flex-col gap-4 pl-6 mt-6">
           {navMenu.map((item) => (
             <div
+              key={item.title}
               onClick={() => {
                 router.push(item?.link);
                 closeMenu();
