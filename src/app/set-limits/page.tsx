@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Metadata } from "next";
 
 const categories = [
   "Food",
@@ -21,6 +22,8 @@ const categories = [
   "Housing",
   "Others",
 ];
+
+
 
 export default function SetLimits() {
   const [limits, setLimits] = useState<{ [key: string]: number }>({});
