@@ -30,8 +30,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 const formSchema = z.object({
   amount: z.coerce.number().positive("Amount must be positive"),
@@ -48,6 +49,7 @@ const formSchema = z.object({
 });
 
 export default function InputExpense() {
+  const [loading, setLoading] = useState(false);
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -59,14 +61,14 @@ export default function InputExpense() {
 
   async function onSubmit(values) {
     try {
-      console.log(values);
       // You can add your form submission logic here
+      setLoading(true);
       const response = await axios.post("/api/transactions", values);
       if (response.status === 201) {
         form.reset();
         toast.success("Expense added successfully");
       }
-      console.log(response.data);
+      setLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -193,7 +195,14 @@ export default function InputExpense() {
           />
 
           <Button type="submit" className="w-full mt-4">
-            Submit Expense
+            {loading ? (
+              <div className="flex items-center gap-2">
+                <span>Submitting</span>{" "}
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              </div>
+            ) : (
+              "Submit"
+            )}
           </Button>
         </form>
       </Form>
