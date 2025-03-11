@@ -1,5 +1,5 @@
 "use client";
-
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Card,
@@ -70,13 +70,58 @@ const categoryIcons: Record<string, string> = {
 async function fetchData(selectedMonth: number): Promise<DataState> {
   const spentData = await fetchSummary(selectedMonth);
   const year = 2025;
-  const response = await fetch(`/api/budgets?month=${selectedMonth}&year=${year}`);
+  const response = await fetch(
+    `/api/budgets?month=${selectedMonth}&year=${year}`
+  );
   const d = await response.json();
 
   return {
     categoryBreakdown: spentData.categoryBreakdown || [],
     budgets: d.budgets || [],
   };
+}
+
+const api = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
+const genAI = new GoogleGenerativeAI(api);
+const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+function extractArrayFromResponse(response: string): string[] {
+  try {
+    // Find the first and last square brackets to extract the JSON array
+    const startIndex = response.indexOf("[");
+    const endIndex = response.lastIndexOf("]") + 1;
+
+    if (startIndex === -1 || endIndex === 0) {
+      throw new Error("No valid JSON array found in response.");
+    }
+
+    const jsonArrayString = response.slice(startIndex, endIndex);
+    return JSON.parse(jsonArrayString);
+  } catch (error) {
+    console.error("Error parsing response:", error);
+    return [];
+  }
+}
+
+async function analyzeFinancialData(
+  categoryBreakdown: CategoryBreakdownItem[],
+  budgets: BudgetItem[]
+) {
+  try {
+    const prompt = `I have the following budget data: ${JSON.stringify(budgets)}
+      and the following spending data: ${JSON.stringify(categoryBreakdown)}
+      I want you to analyze the data and give me some insights about the user's spending habits.
+      and dont use dollar sign use rupee sign
+                      Please provide the data insights in the form of an array of  strings. Just provide me the array nothing more.`;
+    const response = await model.generateContent(prompt);
+    const responseText = response.response.text();
+    
+
+    return extractArrayFromResponse(responseText);
+  } catch (error) {
+    console.error("Error generating insights:", error);
+    return ["Failed to generate insights."];
+  }
 }
 
 const BudgetSpendingDashboard: React.FC = () => {
@@ -90,8 +135,8 @@ const BudgetSpendingDashboard: React.FC = () => {
   >([]);
   const [selectedMonth, setSelectedMonth] = useState<number>(3);
   const [loading, setLoading] = useState(false);
+  const [insights, setInsights] = useState<string[]>([]);
 
-  // Fetch Transactions
   const getTransactions = useCallback(async (month: number) => {
     setLoading(true);
     const fetchedData = await fetchData(month);
@@ -99,12 +144,23 @@ const BudgetSpendingDashboard: React.FC = () => {
     setLoading(false);
   }, []);
 
-  // Fetch data when month changes
   useEffect(() => {
     getTransactions(selectedMonth);
   }, [selectedMonth, getTransactions]);
 
-  // Process Data once it's fetched
+  useEffect(() => {
+    async function fetchInsights() {
+      if (data.budgets.length > 0 && data.categoryBreakdown.length > 0) {
+        const insightsData = await analyzeFinancialData(
+          data.categoryBreakdown,
+          data.budgets
+        );
+        setInsights(insightsData);
+      }
+    }
+    fetchInsights();
+  }, [data.budgets.length, data.categoryBreakdown.length]);
+
   useEffect(() => {
     if (!data.categoryBreakdown.length || !data.budgets.length) return;
 
@@ -113,7 +169,6 @@ const BudgetSpendingDashboard: React.FC = () => {
       spendingMap[item._id] = item.total;
     });
 
-    // Combine budget & spending
     const combined: CombinedDataItem[] = data.budgets.map((budget) => {
       const spent = spendingMap[budget.category] || 0;
       const percentage = budget.limit > 0 ? (spent / budget.limit) * 100 : 0;
@@ -170,7 +225,7 @@ const BudgetSpendingDashboard: React.FC = () => {
               <Alert variant="destructive" className="mb-6">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  You&apos;re over budget in {overBudgetCategories.length}{" "}
+                  You're over budget in {overBudgetCategories.length}{" "}
                   {overBudgetCategories.length === 1
                     ? "category"
                     : "categories"}
@@ -183,9 +238,10 @@ const BudgetSpendingDashboard: React.FC = () => {
             )}
 
             <Tabs defaultValue="progress">
-              <TabsList className="grid w-full grid-cols-2 mb-6">
+              <TabsList className="grid w-full grid-cols-3 mb-6">
                 <TabsTrigger value="progress">Progress</TabsTrigger>
                 <TabsTrigger value="bar">Bar Chart</TabsTrigger>
+                <TabsTrigger value="insights">Insights</TabsTrigger>
               </TabsList>
 
               <TabsContent value="progress" className="space-y-4">
@@ -233,8 +289,24 @@ const BudgetSpendingDashboard: React.FC = () => {
                   </ResponsiveContainer>
                 </div>
               </TabsContent>
-            </Tabs>
 
+              <TabsContent value="insights">
+                <div className="p-4">
+                  <h3 className="text-lg font-medium mb-2">
+                    Financial Insights
+                  </h3>
+                  <ul className="list-disc list-inside text-gray-700">
+                    {insights.length > 0 ? (
+                      insights.map((insight, index) => (
+                        <li key={index}>{insight}</li>
+                      ))
+                    ) : (
+                      <li>No insights available</li>
+                    )}
+                  </ul>
+                </div>
+              </TabsContent>
+            </Tabs>
             <div className="mt-6 pt-4 border-t">
               <h3 className="font-medium text-lg mb-2">Summary</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

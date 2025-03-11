@@ -69,7 +69,6 @@ export default function ExpenseDashboard() {
     getTransactions(selectedMonth);
   }, [getTransactions, selectedMonth]);
 
-  console.log(data);
 
   return (
     <>

@@ -70,7 +70,6 @@ export default function CategoryChart() {
   }, [selectedMonth, getTransactions]);
 
   useEffect(() => {
-    console.log("Processing transactions:", transactions);
 
     // Initialize all categories with zero amounts
     const categoryTotals: Record<string, number> = {};
@@ -88,15 +87,12 @@ export default function CategoryChart() {
           ? transactionCategory
           : "others";
 
-        console.log(
-          `Transaction: ${t.category} → Mapped to: ${category}, Amount: ${t.amount}`
-        );
+        
         categoryTotals[category] += t.amount;
       });
     }
 
     // Log category totals for debugging
-    console.log("Category totals:", categoryTotals);
 
     // Format data for the pie chart
     const formattedData = allCategories
@@ -106,7 +102,6 @@ export default function CategoryChart() {
       }))
       .filter((data) => data.amount > 0); // Remove categories with zero spending
 
-    console.log("Formatted chart data:", formattedData);
     setChartData(formattedData);
   }, [transactions]);
 

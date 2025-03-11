@@ -52,7 +52,6 @@ export default function ExpenseBarChart({
   >([]);
 
   useEffect(() => {
-    console.log("Processing transactions for bar chart:", transactions);
 
     // Initialize all categories with zero amounts
     const categoryTotals: Record<string, number> = {};
@@ -79,7 +78,6 @@ export default function ExpenseBarChart({
 
     setChartData(formattedData);
 
-    console.log("Formatted bar chart data:", formattedData);
   }, [transactions]);
 
   return (

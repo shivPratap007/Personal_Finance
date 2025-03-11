@@ -11,7 +11,6 @@ export async function GET(request: NextRequest) {
     const monthParam = searchParams.get("month") || "0";
     const month = parseInt(monthParam);
 
-    console.log("Month parameter:", month);
 
     let query = {};
 
@@ -25,7 +24,6 @@ export async function GET(request: NextRequest) {
         date: { $gte: startDate, $lte: endDate },
       };
 
-      console.log("Date range:", startDate, "to", endDate);
     }
 
     // Get total expenses based on query
