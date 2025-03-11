@@ -82,7 +82,6 @@ async function fetchData(selectedMonth: number): Promise<DataState> {
 }
 
 const api = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
-console.log(api);
 const genAI = new GoogleGenerativeAI(api);
 const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
