@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Personal Finance Visualizer
 
-## Getting Started
+A simple web application for tracking personal finances, providing insights into spending habits, and managing budgets efficiently.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### 1. Transaction Management
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Add, edit, and delete transactions with details such as amount, date, and description.
+- View all transactions in a structured list format.
+- Basic form validation to ensure correct data entry.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. Categorization & Insights
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Assign transactions to predefined categories (e.g., Food, Rent, Travel, etc.).
+- View a **category-wise pie chart** to analyze spending distribution.
+- A **dashboard with summary cards** displaying:
+  - Total expenses for the month.
+  - Breakdown of expenses by category.
+  - Most recent transactions.
 
-## Learn More
+### 3. Budgeting & Expense Tracking
 
-To learn more about Next.js, take a look at the following resources:
+- Set **monthly budgets** for different categories.
+- Compare **budget vs actual spending** using a visual chart.
+- Get **spending insights** to understand trends and optimize expenses.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4. Charts & Data Visualization
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Monthly expenses bar chart** for quick analysis.
+- **Category-wise spending pie chart** for better financial insights.
+- **Budget tracking comparison** to help in financial planning.
 
-## Deploy on Vercel
+### 5. Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Frontend:** Next.js, React, shadcn/ui
+- **Backend:** MongoDB for data storage
+- **Charts & UI Components:** Recharts for data visualization
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 6. Responsive Design & User Experience
+
+- Fully responsive design for desktop and mobile users.
+- Well-handled error states and validation.
+- Intuitive UI with smooth animations and transitions.
+
+## Installation & Setup
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-username/personal-finance-visualizer.git
+   ```
+2. Navigate to the project directory:
+   ```sh
+   cd personal-finance-visualizer
+   ```
+3. Install dependencies:
+   ```sh
+   npm install
+   ```
+4. Set up environment variables in `.env.local`:
+   ```env
+   MONGODB_URI=your_mongodb_connection_string
+   ```
+5. Start the development server:
+   ```sh
+   npm run dev
+   ```
+
+## Deployment
+
+- The project is deployed at: [Live URL](https://your-deployment-url.com)
+- The backend is connected with MongoDB for data storage.
+
+## Contributing
+
+If you'd like to contribute, feel free to fork the repository and submit a pull request.
+
+## License
+
+This project is open-source and available under the [MIT License](LICENSE).

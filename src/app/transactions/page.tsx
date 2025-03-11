@@ -154,7 +154,7 @@ export default function Transactions() {
 
                 <div className="mt-4">
                   <p className="text-xl font-bold text-green-600">
-                    ₹{transaction.amount}
+                  ₹{transaction.amount}
                   </p>
                   <p className="text-gray-500 text-sm">
                     {transaction.category}
